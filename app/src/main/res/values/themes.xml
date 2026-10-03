@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Shanova" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/shanova_black</item>
+        <item name="android:statusBarColor">@color/shanova_black</item>
+        <item name="android:navigationBarColor">@color/shanova_black</item>
+        <item name="android:colorAccent">@color/shanova_accent</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>

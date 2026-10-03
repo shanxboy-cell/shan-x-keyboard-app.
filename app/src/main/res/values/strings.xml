@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SHAN-X-NOVA Keyboard</string>
+    <string name="tagline">Type Beyond Ordinary.</string>
+    <string name="developer">SHAN</string>
+
+    <string name="subtype_en">English (SHAN-X-NOVA)</string>
+    <string name="subtype_si">සිංහල (SHAN-X-NOVA)</string>
+    <string name="subtype_ta">தமிழ் (SHAN-X-NOVA)</string>
+
+    <!-- Setup flow -->
+    <string name="setup_title">Get Started</string>
+    <string name="setup_step1_title">1. Enable SHAN-X-NOVA Keyboard</string>
+    <string name="setup_step1_desc">Turn on SHAN-X-NOVA Keyboard in your system keyboard settings.</string>
+    <string name="setup_step1_button">Open Keyboard Settings</string>
+    <string name="setup_step2_title">2. Switch to SHAN-X-NOVA</string>
+    <string name="setup_step2_desc">Select SHAN-X-NOVA Keyboard as your active input method.</string>
+    <string name="setup_step2_button">Choose SHAN-X-NOVA Keyboard</string>
+    <string name="setup_done">SHAN-X-NOVA Keyboard is active. Type Beyond Ordinary.</string>
+    <string name="status_enabled">Enabled</string>
+    <string name="status_not_enabled">Not enabled yet</string>
+    <string name="status_active">Active keyboard</string>
+    <string name="status_not_active">Not the current keyboard</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_height">Keyboard height</string>
+    <string name="settings_sound">Key sound</string>
+    <string name="settings_haptic">Haptic feedback</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_language">Languages</string>
+    <string name="settings_language_desc">English, සිංහල and தமிழ் are built in. Switch with the globe key while typing.</string>
+    <string name="privacy_note">SHAN-X-NOVA Keyboard works fully offline. It has no internet permission, never logs what you type, and stores all preferences on your device only.</string>
+
+    <string name="theme_emerald">Emerald Night</string>
+    <string name="theme_neon">Neon Carbon</string>
+    <string name="theme_forest">Forest Mist</string>
+</resources>

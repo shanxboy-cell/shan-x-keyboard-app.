@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SHAN-X-NOVA core palette -->
+    <color name="shanova_black">#0A0A0A</color>
+    <color name="shanova_surface">#141416</color>
+    <color name="shanova_key">#1E1E22</color>
+    <color name="shanova_key_special">#17171B</color>
+    <color name="shanova_accent">#00C853</color>
+    <color name="shanova_accent_dim">#0A3D22</color>
+    <color name="shanova_white">#F5F5F7</color>
+    <color name="shanova_grey">#9E9EA6</color>
+</resources>
