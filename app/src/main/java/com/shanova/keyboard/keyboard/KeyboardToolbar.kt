@@ -16,6 +16,8 @@ class KeyboardToolbar(
     private var theme: KeyboardTheme,
     private val onEmoji: () -> Unit,
     private val onClipboard: () -> Unit,
+    private val onEdit: () -> Unit,
+    private val onSymbols: () -> Unit,
     private val onThemes: () -> Unit,
     private val onLanguage: () -> Unit,
     private val onSettings: () -> Unit
@@ -46,6 +48,8 @@ class KeyboardToolbar(
             "🔍" to { },
             "😀" to onEmoji,
             "📋" to onClipboard,
+            "✎" to onEdit,
+            "∑" to onSymbols,
             "🎨" to onThemes,
             "🌐" to onLanguage,
             "🎙" to { },

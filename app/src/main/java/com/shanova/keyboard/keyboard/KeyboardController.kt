@@ -3,14 +3,12 @@ package com.shanova.keyboard.keyboard
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
-import android.text.InputType
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.shanova.keyboard.emoji.EmojiPanel
 import com.shanova.keyboard.keyboard.languages.Language
 import com.shanova.keyboard.keyboard.languages.LanguageRegistry
@@ -57,6 +55,8 @@ class KeyboardController(private val context: Context) {
             theme = theme,
             onEmoji = { showEmoji() },
             onClipboard = { showClipboard() },
+            onEdit = { showEditingPanel() },
+            onSymbols = { showSymbolPanel() },
             onThemes = { openSettings() },
             onLanguage = { switchLanguage() },
             onSettings = { openSettings() }
@@ -228,6 +228,115 @@ class KeyboardController(private val context: Context) {
             LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f
         ))
         emojiPanel = null
+    }
+
+    private fun showEditingPanel() {
+        val panel = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setBackgroundColor(theme.backgroundColor)
+        }
+        panel.addView(TextView(context).apply {
+            text = "✎  Text editing"
+            textSize = 16f
+            setTextColor(theme.primaryTextColor)
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        })
+        val actions = listOf(
+            "Select all" to { contextMenu(android.R.id.selectAll) },
+            "Copy" to { contextMenu(android.R.id.copy) },
+            "Cut" to { contextMenu(android.R.id.cut) },
+            "Paste" to { contextMenu(android.R.id.paste) },
+            "← Cursor left" to { moveCursor(KeyEvent.KEYCODE_DPAD_LEFT) },
+            "Cursor right →" to { moveCursor(KeyEvent.KEYCODE_DPAD_RIGHT) },
+            "Beginning" to { moveCursor(KeyEvent.KEYCODE_MOVE_HOME) },
+            "End" to { moveCursor(KeyEvent.KEYCODE_MOVE_END) }
+        )
+        actions.chunked(2).forEach { rowItems ->
+            val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
+            rowItems.forEach { (label, action) ->
+                row.addView(TextView(context).apply {
+                    text = label
+                    gravity = android.view.Gravity.CENTER
+                    setTextColor(theme.primaryTextColor)
+                    background = GradientDrawable().apply {
+                        cornerRadius = dp(theme.cornerRadiusDp.toInt()).toFloat()
+                        setColor(theme.specialKeyColor)
+                        setStroke(dp(1), theme.borderColor)
+                    }
+                    layoutParams = LinearLayout.LayoutParams(0, dp(46), 1f).apply {
+                        setMargins(dp(3), dp(3), dp(3), dp(3))
+                    }
+                    setOnClickListener { action() }
+                })
+            }
+            panel.addView(row)
+        }
+        panel.addView(TextView(context).apply {
+            text = "ABC"
+            gravity = android.view.Gravity.CENTER
+            setTextColor(theme.primaryTextColor)
+            setPadding(0, dp(12), 0, dp(12))
+            setOnClickListener { showLetters() }
+        })
+        showPanel(panel)
+    }
+
+    private fun showSymbolPanel() {
+        val panel = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setBackgroundColor(theme.backgroundColor)
+        }
+        panel.addView(TextView(context).apply {
+            text = "∑  Symbols"
+            textSize = 16f
+            setTextColor(theme.primaryTextColor)
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        })
+        val symbols = "±×÷≠≈≤≥∞√∑π∆←→↑↓↔€£¥₹©®™§¶•…†‡°‰"
+        symbols.chunked(8).forEach { chunk ->
+            val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
+            chunk.forEach { symbol ->
+                row.addView(TextView(context).apply {
+                    text = symbol.toString()
+                    textSize = 22f
+                    gravity = android.view.Gravity.CENTER
+                    setTextColor(theme.primaryTextColor)
+                    layoutParams = LinearLayout.LayoutParams(0, dp(46), 1f)
+                    setOnClickListener { commit(symbol.toString()) }
+                })
+            }
+            panel.addView(row)
+        }
+        panel.addView(TextView(context).apply {
+            text = "ABC"
+            gravity = android.view.Gravity.CENTER
+            setTextColor(theme.primaryTextColor)
+            setPadding(0, dp(12), 0, dp(12))
+            setOnClickListener { showLetters() }
+        })
+        showPanel(panel)
+    }
+
+    private fun showPanel(panel: View) {
+        root.removeAllViews()
+        if (prefs.toolbarEnabled) root.addView(toolbar, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, dp(38)
+        ))
+        root.addView(panel, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f
+        ))
+        emojiPanel = null
+    }
+
+    private fun contextMenu(actionId: Int) {
+        inputConnection?.performContextMenuAction(actionId)
+    }
+
+    private fun moveCursor(keyCode: Int) {
+        inputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
+        inputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keyCode))
     }
 
     private fun openSettings() {
