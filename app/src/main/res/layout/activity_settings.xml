@@ -197,6 +197,82 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Premium key animations"
+                    android:textColor="#F5F5F7"
+                    android:textSize="14sp" />
+                <Switch
+                    android:id="@+id/switchAnimation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Large, comfortable keys"
+                    android:textColor="#F5F5F7"
+                    android:textSize="14sp" />
+                <Switch
+                    android:id="@+id/switchLargeKeys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reduced motion"
+                    android:textColor="#F5F5F7"
+                    android:textSize="14sp" />
+                <Switch
+                    android:id="@+id/switchReducedMotion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="High contrast key borders"
+                    android:textColor="#F5F5F7"
+                    android:textSize="14sp" />
+                <Switch
+                    android:id="@+id/switchHighContrast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -213,29 +289,71 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/themeEmerald"
+                    android:id="@+id/themeNova"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/theme_emerald"
+                    android:text="SHAN-X-NOVA Black"
                     android:textColor="#F5F5F7"
                     android:buttonTint="#00C853" />
-
+                <RadioButton
+                    android:id="@+id/themeMidnight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Midnight Green"
+                    android:textColor="#F5F5F7"
+                    android:buttonTint="#00C853" />
+                <RadioButton
+                    android:id="@+id/themeAmoled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AMOLED Black"
+                    android:textColor="#F5F5F7"
+                    android:buttonTint="#00C853" />
+                <RadioButton
+                    android:id="@+id/themeCarbon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Carbon"
+                    android:textColor="#F5F5F7"
+                    android:buttonTint="#00C853" />
+                <RadioButton
+                    android:id="@+id/themeAurora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Aurora"
+                    android:textColor="#F5F5F7"
+                    android:buttonTint="#00C853" />
+                <RadioButton
+                    android:id="@+id/themeGlass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Glass"
+                    android:textColor="#F5F5F7"
+                    android:buttonTint="#00C853" />
                 <RadioButton
                     android:id="@+id/themeNeon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/theme_neon"
+                    android:text="Neon"
                     android:textColor="#F5F5F7"
                     android:buttonTint="#00C853" />
-
                 <RadioButton
-                    android:id="@+id/themeForest"
+                    android:id="@+id/themeLight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/theme_forest"
+                    android:text="Light Premium"
                     android:textColor="#F5F5F7"
                     android:buttonTint="#00C853" />
             </RadioGroup>
+
+            <Button
+                android:id="@+id/btnCustomTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Create custom theme"
+                android:textColor="#0A0A0A"
+                android:background="@drawable/btn_accent" />
 
             <TextView
                 android:layout_width="wrap_content"

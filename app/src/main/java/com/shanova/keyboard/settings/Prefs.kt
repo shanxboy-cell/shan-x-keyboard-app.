@@ -24,9 +24,41 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_HAPTIC, true)
         set(v) = sp.edit().putBoolean(KEY_HAPTIC, v).apply()
 
+    var keyAnimationEnabled: Boolean
+        get() = sp.getBoolean(KEY_ANIMATION, true)
+        set(v) = sp.edit().putBoolean(KEY_ANIMATION, v).apply()
+
+    var popupPreviewEnabled: Boolean
+        get() = sp.getBoolean(KEY_POPUP_PREVIEW, false)
+        set(v) = sp.edit().putBoolean(KEY_POPUP_PREVIEW, v).apply()
+
+    var reducedMotion: Boolean
+        get() = sp.getBoolean(KEY_REDUCED_MOTION, false)
+        set(v) = sp.edit().putBoolean(KEY_REDUCED_MOTION, v).apply()
+
+    var largeKeysEnabled: Boolean
+        get() = sp.getBoolean(KEY_LARGE_KEYS, false)
+        set(v) = sp.edit().putBoolean(KEY_LARGE_KEYS, v).apply()
+
+    var highContrastEnabled: Boolean
+        get() = sp.getBoolean(KEY_HIGH_CONTRAST, false)
+        set(v) = sp.edit().putBoolean(KEY_HIGH_CONTRAST, v).apply()
+
     var themeId: String
-        get() = sp.getString(KEY_THEME, "emerald") ?: "emerald"
+        get() = sp.getString(KEY_THEME, "shan_x_nova") ?: "shan_x_nova"
         set(v) = sp.edit().putString(KEY_THEME, v).apply()
+
+    var customAccent: String
+        get() = sp.getString(KEY_CUSTOM_ACCENT, "#36D28B") ?: "#36D28B"
+        set(v) = sp.edit().putString(KEY_CUSTOM_ACCENT, v).apply()
+
+    var customBackground: String
+        get() = sp.getString(KEY_CUSTOM_BACKGROUND, "#070909") ?: "#070909"
+        set(v) = sp.edit().putString(KEY_CUSTOM_BACKGROUND, v).apply()
+
+    var customKey: String
+        get() = sp.getString(KEY_CUSTOM_KEY, "#18211E") ?: "#18211E"
+        set(v) = sp.edit().putString(KEY_CUSTOM_KEY, v).apply()
 
     var currentLanguageId: String
         get() = sp.getString(KEY_LANGUAGE, "si") ?: "si"
@@ -48,11 +80,19 @@ class Prefs(context: Context) {
     }
 
     companion object {
-        private const val FILE = "shanova_prefs"
+        private const val FILE = "shan_x_nova_prefs"
         private const val KEY_HEIGHT = "keyboard_height_scale"
         private const val KEY_SOUND = "key_sound"
         private const val KEY_HAPTIC = "haptic_feedback"
+        private const val KEY_ANIMATION = "key_animation"
+        private const val KEY_POPUP_PREVIEW = "popup_key_preview"
+        private const val KEY_REDUCED_MOTION = "reduced_motion"
+        private const val KEY_LARGE_KEYS = "large_keys"
+        private const val KEY_HIGH_CONTRAST = "high_contrast"
         private const val KEY_THEME = "theme_id"
+        private const val KEY_CUSTOM_ACCENT = "custom_accent"
+        private const val KEY_CUSTOM_BACKGROUND = "custom_background"
+        private const val KEY_CUSTOM_KEY = "custom_key"
         private const val KEY_LANGUAGE = "current_language"
         private const val KEY_RECENT_EMOJI = "recent_emojis"
         private const val DELIM = "|"

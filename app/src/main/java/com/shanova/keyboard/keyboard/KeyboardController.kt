@@ -34,7 +34,7 @@ class KeyboardController(private val context: Context) {
     private var language: Language = LanguageRegistry.byId(prefs.currentLanguageId)
     private var layer = Layer.LETTERS
     private var shiftActive = false
-    private var theme: KeyboardTheme = KeyboardTheme.byId(prefs.themeId)
+    private var theme: KeyboardTheme = loadTheme()
 
     /** Connection to the app currently receiving text. */
     var inputConnection: InputConnection? = null
@@ -43,7 +43,7 @@ class KeyboardController(private val context: Context) {
     /* -------------------- lifecycle -------------------- */
 
     fun createRootView(): View {
-        theme = KeyboardTheme.byId(prefs.themeId)
+        theme = loadTheme()
         root = FrameLayout(context)
         keyboardView = KeyboardView(context)
         root.addView(keyboardView)
@@ -55,7 +55,7 @@ class KeyboardController(private val context: Context) {
 
     /** Called when the keyboard (re)opens: reload prefs and rebuild. */
     fun refresh() {
-        val newTheme = KeyboardTheme.byId(prefs.themeId)
+        val newTheme = loadTheme()
         if (newTheme.id != theme.id) {
             theme = newTheme
             applyTheme()
@@ -64,6 +64,10 @@ class KeyboardController(private val context: Context) {
         keyboardView.apply {
             keySoundEnabled = prefs.keySoundEnabled
             hapticEnabled = prefs.hapticEnabled
+            keyAnimationEnabled = prefs.keyAnimationEnabled
+            reducedMotion = prefs.reducedMotion
+            largeKeysEnabled = prefs.largeKeysEnabled
+            highContrastEnabled = prefs.highContrastEnabled
             heightScale = prefs.keyboardHeightScale
         }
         when (layer) {
@@ -82,10 +86,20 @@ class KeyboardController(private val context: Context) {
         keyboardView.theme = theme
     }
 
+    private fun loadTheme(): KeyboardTheme = if (prefs.themeId == "custom") {
+        KeyboardTheme.custom(prefs.customAccent, prefs.customBackground, prefs.customKey)
+    } else {
+        KeyboardTheme.byId(prefs.themeId)
+    }
+
     private fun wireKeyboard() {
         keyboardView.apply {
             keySoundEnabled = prefs.keySoundEnabled
             hapticEnabled = prefs.hapticEnabled
+            keyAnimationEnabled = prefs.keyAnimationEnabled
+            reducedMotion = prefs.reducedMotion
+            largeKeysEnabled = prefs.largeKeysEnabled
+            highContrastEnabled = prefs.highContrastEnabled
             heightScale = prefs.keyboardHeightScale
             onKeyListener = object : KeyboardView.OnKeyListener {
                 override fun onKey(key: Key) = handleKey(key)

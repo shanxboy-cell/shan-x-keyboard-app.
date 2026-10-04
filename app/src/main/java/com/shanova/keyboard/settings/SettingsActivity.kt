@@ -1,16 +1,20 @@
 package com.shanova.keyboard.settings
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
+import android.text.InputType
 import com.shanova.keyboard.R
 import com.shanova.keyboard.theme.KeyboardTheme
 
@@ -115,22 +119,76 @@ class SettingsActivity : Activity() {
             isChecked = prefs.hapticEnabled
             setOnCheckedChangeListener { _, checked -> prefs.hapticEnabled = checked }
         }
+        findViewById<Switch>(R.id.switchAnimation).apply {
+            isChecked = prefs.keyAnimationEnabled
+            setOnCheckedChangeListener { _, checked -> prefs.keyAnimationEnabled = checked }
+        }
+        findViewById<Switch>(R.id.switchLargeKeys).apply {
+            isChecked = prefs.largeKeysEnabled
+            setOnCheckedChangeListener { _, checked -> prefs.largeKeysEnabled = checked }
+        }
+        findViewById<Switch>(R.id.switchReducedMotion).apply {
+            isChecked = prefs.reducedMotion
+            setOnCheckedChangeListener { _, checked -> prefs.reducedMotion = checked }
+        }
+        findViewById<Switch>(R.id.switchHighContrast).apply {
+            isChecked = prefs.highContrastEnabled
+            setOnCheckedChangeListener { _, checked -> prefs.highContrastEnabled = checked }
+        }
     }
 
     private fun setupThemes() {
         val group = findViewById<RadioGroup>(R.id.themeGroup)
-        when (KeyboardTheme.byId(prefs.themeId).id) {
-            KeyboardTheme.NEON_CARBON.id -> group.check(R.id.themeNeon)
-            KeyboardTheme.FOREST_MIST.id -> group.check(R.id.themeForest)
-            else -> group.check(R.id.themeEmerald)
+        val selectedId = when (KeyboardTheme.byId(prefs.themeId).id) {
+            KeyboardTheme.MIDNIGHT_GREEN.id -> R.id.themeMidnight
+            KeyboardTheme.AMOLED_BLACK.id -> R.id.themeAmoled
+            KeyboardTheme.CARBON.id -> R.id.themeCarbon
+            KeyboardTheme.AURORA.id -> R.id.themeAurora
+            KeyboardTheme.GLASS.id -> R.id.themeGlass
+            KeyboardTheme.NEON.id -> R.id.themeNeon
+            KeyboardTheme.LIGHT_PREMIUM.id -> R.id.themeLight
+            else -> R.id.themeNova
         }
+        group.check(selectedId)
         group.setOnCheckedChangeListener { _, checkedId ->
             prefs.themeId = when (checkedId) {
+                R.id.themeMidnight -> KeyboardTheme.MIDNIGHT_GREEN.id
+                R.id.themeAmoled -> KeyboardTheme.AMOLED_BLACK.id
+                R.id.themeCarbon -> KeyboardTheme.CARBON.id
+                R.id.themeAurora -> KeyboardTheme.AURORA.id
+                R.id.themeGlass -> KeyboardTheme.GLASS.id
                 R.id.themeNeon -> KeyboardTheme.NEON_CARBON.id
-                R.id.themeForest -> KeyboardTheme.FOREST_MIST.id
-                else -> KeyboardTheme.EMERALD_NIGHT.id
+                R.id.themeLight -> KeyboardTheme.LIGHT_PREMIUM.id
+                else -> KeyboardTheme.SHAN_X_NOVA.id
             }
         }
+        findViewById<Button>(R.id.btnCustomTheme).setOnClickListener { showCustomThemeDialog() }
+    }
+
+    private fun showCustomThemeDialog() {
+        val fields = listOf(
+            EditText(this).apply { hint = "Accent hex  (#36D28B)"; setText(prefs.customAccent) },
+            EditText(this).apply { hint = "Background hex  (#070909)"; setText(prefs.customBackground) },
+            EditText(this).apply { hint = "Key hex  (#18211E)"; setText(prefs.customKey) }
+        )
+        fields.forEach { it.inputType = InputType.TYPE_CLASS_TEXT; it.selectAll() }
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(40, 8, 40, 0)
+            fields.forEach { addView(it) }
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Create custom theme")
+            .setMessage("Choose three local colors using #RRGGBB values.")
+            .setView(box)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Apply") { _, _ ->
+                prefs.customAccent = fields[0].text.toString()
+                prefs.customBackground = fields[1].text.toString()
+                prefs.customKey = fields[2].text.toString()
+                prefs.themeId = "custom"
+            }
+            .show()
     }
 
     /* -------------------- height mapping -------------------- */

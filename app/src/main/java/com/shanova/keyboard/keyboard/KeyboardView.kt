@@ -35,6 +35,10 @@ class KeyboardView(context: Context) : LinearLayout(context) {
     var theme: KeyboardTheme = KeyboardTheme.EMERALD_NIGHT
     var keySoundEnabled = false
     var hapticEnabled = true
+    var keyAnimationEnabled = true
+    var reducedMotion = false
+    var largeKeysEnabled = false
+    var highContrastEnabled = false
     var heightScale = 1.0f
 
     private val handler = Handler(Looper.getMainLooper())
@@ -62,7 +66,8 @@ class KeyboardView(context: Context) : LinearLayout(context) {
             orientation = HORIZONTAL
             layoutParams = LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                (BASE_KEY_HEIGHT_DP * heightScale).toInt().let { dp(it) }
+                (BASE_KEY_HEIGHT_DP * heightScale * if (largeKeysEnabled) 1.12f else 1f)
+                    .toInt().let { dp(it) }
             ).apply { topMargin = dp(4) }
         }
 
@@ -101,7 +106,7 @@ class KeyboardView(context: Context) : LinearLayout(context) {
                     KeyType.CHARACTER -> if (label.length > 2) 16f else 21f
                     KeyType.SPACE -> 13f
                     else -> 17f
-                }
+                } * theme.fontScale * if (largeKeysEnabled) 1.06f else 1f
             )
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
             layoutParams = LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, key.widthWeight)
@@ -157,20 +162,25 @@ class KeyboardView(context: Context) : LinearLayout(context) {
             theme.accentColor else 0x22FFFFFF
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            cornerRadius = dp(9).toFloat()
-            setColor(fill)
-            setStroke(dp(1), stroke)
+            cornerRadius = dp(theme.cornerRadiusDp.toInt()).toFloat()
+            setColor(withAlpha(fill, theme.transparency))
+            setStroke(dp(if (highContrastEnabled) 2 else 1), if (highContrastEnabled) theme.accentColor else stroke)
         }
     }
 
     private fun pressVisual(v: TextView, key: Key, shiftActive: Boolean, pressed: Boolean) {
         v.background = keyBackground(key, shiftActive, pressed)
         v.animate().cancel()
-        v.animate()
-            .scaleX(if (pressed) 1.06f else 1f)
-            .scaleY(if (pressed) 1.06f else 1f)
-            .setDuration(if (pressed) 60 else 110)
-            .start()
+        if (keyAnimationEnabled && !reducedMotion) {
+            v.animate()
+                .scaleX(if (pressed) 1.045f else 1f)
+                .scaleY(if (pressed) 1.045f else 1f)
+                .setDuration(if (pressed) 55 else 100)
+                .start()
+        } else {
+            v.scaleX = 1f
+            v.scaleY = 1f
+        }
         if (key.type == KeyType.CHARACTER) {
             v.setTextColor(if (pressed) 0xFF000000.toInt() else theme.primaryTextColor)
         }
@@ -214,6 +224,14 @@ class KeyboardView(context: Context) : LinearLayout(context) {
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, v.toFloat(), resources.displayMetrics
         ).toInt()
+
+    private fun withAlpha(color: Int, opacity: Float): Int =
+        android.graphics.Color.argb(
+            (android.graphics.Color.alpha(color) * opacity.coerceIn(0.2f, 1f)).toInt(),
+            android.graphics.Color.red(color),
+            android.graphics.Color.green(color),
+            android.graphics.Color.blue(color)
+        )
 
     companion object {
         private const val BASE_KEY_HEIGHT_DP = 52f
