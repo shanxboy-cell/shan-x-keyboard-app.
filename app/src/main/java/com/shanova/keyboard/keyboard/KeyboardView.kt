@@ -189,10 +189,7 @@ class KeyboardView(context: Context) : LinearLayout(context) {
 
     private fun feedback() {
         if (hapticEnabled) {
-            performHapticFeedback(
-                HapticFeedbackConstants.KEYBOARD_TAP,
-                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-            )
+            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         }
         if (keySoundEnabled) {
             audioManager.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
