@@ -36,5 +36,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".settings.PrivacyActivity"
+            android:exported="false"
+            android:label="Privacy Center" />
+
+        <activity
+            android:name=".settings.AboutActivity"
+            android:exported="false"
+            android:label="About SHAN-X-NOVA" />
     </application>
 </manifest>

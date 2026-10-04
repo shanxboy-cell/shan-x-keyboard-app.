@@ -52,6 +52,14 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_CLIPBOARD_HISTORY, true)
         set(v) = sp.edit().putBoolean(KEY_CLIPBOARD_HISTORY, v).apply()
 
+    var personalizedLearningEnabled: Boolean
+        get() = sp.getBoolean(KEY_LEARNING, false)
+        set(v) = sp.edit().putBoolean(KEY_LEARNING, v).apply()
+
+    var strictOfflineMode: Boolean
+        get() = sp.getBoolean(KEY_OFFLINE, true)
+        set(v) = sp.edit().putBoolean(KEY_OFFLINE, v).apply()
+
     var themeId: String
         get() = sp.getString(KEY_THEME, "shan_x_nova") ?: "shan_x_nova"
         set(v) = sp.edit().putString(KEY_THEME, v).apply()
@@ -119,6 +127,8 @@ class Prefs(context: Context) {
         private const val KEY_HIGH_CONTRAST = "high_contrast"
         private const val KEY_TOOLBAR = "toolbar_enabled"
         private const val KEY_CLIPBOARD_HISTORY = "clipboard_history_enabled"
+        private const val KEY_LEARNING = "personalized_learning_enabled"
+        private const val KEY_OFFLINE = "strict_offline_mode"
         private const val KEY_THEME = "theme_id"
         private const val KEY_CUSTOM_ACCENT = "custom_accent"
         private const val KEY_CUSTOM_BACKGROUND = "custom_background"

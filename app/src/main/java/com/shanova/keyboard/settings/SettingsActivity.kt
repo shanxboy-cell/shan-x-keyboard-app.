@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
 import android.text.InputType
@@ -52,6 +55,7 @@ class SettingsActivity : Activity() {
         setupHeight()
         setupToggles()
         setupThemes()
+        setupDashboardActions()
     }
 
     override fun onResume() {
@@ -171,6 +175,40 @@ class SettingsActivity : Activity() {
             }
         }
         findViewById<Button>(R.id.btnCustomTheme).setOnClickListener { showCustomThemeDialog() }
+    }
+
+    private fun setupDashboardActions() {
+        findViewById<Button>(R.id.btnPrivacyCenter).setOnClickListener {
+            startActivity(Intent(this, PrivacyActivity::class.java))
+        }
+        findViewById<Button>(R.id.btnAbout).setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
+        }
+        val scroll = findViewById<ScrollView>(R.id.settingsScroll)
+        findViewById<EditText>(R.id.settingsSearch).addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString()?.trim()?.lowercase().orEmpty()
+                val targetId = when {
+                    "theme" in query || "color" in query -> R.id.themeGroup
+                    "haptic" in query || "vibration" in query -> R.id.switchHaptic
+                    "clipboard" in query -> R.id.switchClipboardHistory
+                    "toolbar" in query -> R.id.switchToolbar
+                    "animation" in query || "motion" in query -> R.id.switchAnimation
+                    "sound" in query -> R.id.switchSound
+                    "height" in query || "size" in query -> R.id.seekHeight
+                    "privacy" in query || "offline" in query -> R.id.btnPrivacyCenter
+                    "custom" in query -> R.id.btnCustomTheme
+                    else -> null
+                }
+                targetId?.let { id ->
+                    findViewById<android.view.View>(id)?.post {
+                        scroll.smoothScrollTo(0, findViewById<android.view.View>(id).top)
+                    }
+                }
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
     }
 
     private fun showCustomThemeDialog() {
