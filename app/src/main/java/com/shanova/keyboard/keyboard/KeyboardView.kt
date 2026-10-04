@@ -89,7 +89,6 @@ class KeyboardView(context: Context) : LinearLayout(context) {
         }
 
     private fun buildKey(key: Key, shiftActive: Boolean, spaceLabel: String?): View {
-        val isSpecial = key.type != KeyType.CHARACTER
         val label = if (key.type == KeyType.SPACE && spaceLabel != null) spaceLabel
             else key.label
 
