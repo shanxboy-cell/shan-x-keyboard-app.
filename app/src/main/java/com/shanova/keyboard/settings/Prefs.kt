@@ -44,6 +44,14 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_HIGH_CONTRAST, false)
         set(v) = sp.edit().putBoolean(KEY_HIGH_CONTRAST, v).apply()
 
+    var toolbarEnabled: Boolean
+        get() = sp.getBoolean(KEY_TOOLBAR, true)
+        set(v) = sp.edit().putBoolean(KEY_TOOLBAR, v).apply()
+
+    var clipboardHistoryEnabled: Boolean
+        get() = sp.getBoolean(KEY_CLIPBOARD_HISTORY, true)
+        set(v) = sp.edit().putBoolean(KEY_CLIPBOARD_HISTORY, v).apply()
+
     var themeId: String
         get() = sp.getString(KEY_THEME, "shan_x_nova") ?: "shan_x_nova"
         set(v) = sp.edit().putString(KEY_THEME, v).apply()
@@ -79,6 +87,26 @@ class Prefs(context: Context) {
         recentEmojis = list
     }
 
+    var clipboardItems: List<String>
+        get() = (sp.getString(KEY_CLIPBOARD, "") ?: "")
+            .split(DELIM)
+            .filter { it.isNotBlank() }
+        private set(v) = sp.edit()
+            .putString(KEY_CLIPBOARD, v.take(MAX_CLIPBOARD).joinToString(DELIM))
+            .apply()
+
+    fun addClipboardItem(value: String) {
+        if (!clipboardHistoryEnabled || value.isBlank()) return
+        val list = clipboardItems.toMutableList()
+        list.remove(value)
+        list.add(0, value.take(MAX_CLIPBOARD_TEXT))
+        clipboardItems = list
+    }
+
+    fun clearClipboardItems() {
+        clipboardItems = emptyList()
+    }
+
     companion object {
         private const val FILE = "shan_x_nova_prefs"
         private const val KEY_HEIGHT = "keyboard_height_scale"
@@ -89,6 +117,8 @@ class Prefs(context: Context) {
         private const val KEY_REDUCED_MOTION = "reduced_motion"
         private const val KEY_LARGE_KEYS = "large_keys"
         private const val KEY_HIGH_CONTRAST = "high_contrast"
+        private const val KEY_TOOLBAR = "toolbar_enabled"
+        private const val KEY_CLIPBOARD_HISTORY = "clipboard_history_enabled"
         private const val KEY_THEME = "theme_id"
         private const val KEY_CUSTOM_ACCENT = "custom_accent"
         private const val KEY_CUSTOM_BACKGROUND = "custom_background"
@@ -97,5 +127,8 @@ class Prefs(context: Context) {
         private const val KEY_RECENT_EMOJI = "recent_emojis"
         private const val DELIM = "|"
         private const val MAX_RECENT = 36
+        private const val MAX_CLIPBOARD = 24
+        private const val MAX_CLIPBOARD_TEXT = 500
+        private const val KEY_CLIPBOARD = "clipboard_items"
     }
 }

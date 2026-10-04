@@ -119,6 +119,14 @@ class SettingsActivity : Activity() {
             isChecked = prefs.hapticEnabled
             setOnCheckedChangeListener { _, checked -> prefs.hapticEnabled = checked }
         }
+        findViewById<Switch>(R.id.switchToolbar).apply {
+            isChecked = prefs.toolbarEnabled
+            setOnCheckedChangeListener { _, checked -> prefs.toolbarEnabled = checked }
+        }
+        findViewById<Switch>(R.id.switchClipboardHistory).apply {
+            isChecked = prefs.clipboardHistoryEnabled
+            setOnCheckedChangeListener { _, checked -> prefs.clipboardHistoryEnabled = checked }
+        }
         findViewById<Switch>(R.id.switchAnimation).apply {
             isChecked = prefs.keyAnimationEnabled
             setOnCheckedChangeListener { _, checked -> prefs.keyAnimationEnabled = checked }

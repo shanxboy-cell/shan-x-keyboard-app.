@@ -1,11 +1,16 @@
 package com.shanova.keyboard.keyboard
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
+import android.text.InputType
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import com.shanova.keyboard.emoji.EmojiPanel
 import com.shanova.keyboard.keyboard.languages.Language
 import com.shanova.keyboard.keyboard.languages.LanguageRegistry
@@ -27,8 +32,9 @@ class KeyboardController(private val context: Context) {
 
     private val prefs = Prefs(context)
 
-    private lateinit var root: FrameLayout
+    private lateinit var root: LinearLayout
     private lateinit var keyboardView: KeyboardView
+    private lateinit var toolbar: KeyboardToolbar
     private var emojiPanel: EmojiPanel? = null
 
     private var language: Language = LanguageRegistry.byId(prefs.currentLanguageId)
@@ -44,11 +50,20 @@ class KeyboardController(private val context: Context) {
 
     fun createRootView(): View {
         theme = loadTheme()
-        root = FrameLayout(context)
+        root = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
         keyboardView = KeyboardView(context)
-        root.addView(keyboardView)
+        toolbar = KeyboardToolbar(
+            context = context,
+            theme = theme,
+            onEmoji = { showEmoji() },
+            onClipboard = { showClipboard() },
+            onThemes = { openSettings() },
+            onLanguage = { switchLanguage() },
+            onSettings = { openSettings() }
+        )
         applyTheme()
         wireKeyboard()
+        addKeyboardView()
         showLetters()
         return root
     }
@@ -84,6 +99,7 @@ class KeyboardController(private val context: Context) {
             intArrayOf(theme.backgroundColor, theme.backgroundGradientEnd)
         )
         keyboardView.theme = theme
+        if (::toolbar.isInitialized) toolbar.applyTheme(theme)
     }
 
     private fun loadTheme(): KeyboardTheme = if (prefs.themeId == "custom") {
@@ -132,11 +148,22 @@ class KeyboardController(private val context: Context) {
     }
 
     private fun swapToKeyboard() {
-        if (emojiPanel != null) {
+        if (emojiPanel != null || root.childCount == 0 || root.getChildAt(root.childCount - 1) !== keyboardView) {
             root.removeAllViews()
-            root.addView(keyboardView)
+            addKeyboardView()
             emojiPanel = null
         }
+    }
+
+    private fun addKeyboardView() {
+        if (prefs.toolbarEnabled) {
+            root.addView(toolbar, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(38)
+            ))
+        }
+        root.addView(keyboardView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f
+        ))
     }
 
     private fun showEmoji() {
@@ -155,7 +182,58 @@ class KeyboardController(private val context: Context) {
         )
         emojiPanel = panel
         root.removeAllViews()
-        root.addView(panel)
+        if (prefs.toolbarEnabled) root.addView(toolbar, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, dp(38)
+        ))
+        root.addView(panel, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f
+        ))
+    }
+
+    private fun showClipboard() {
+        val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        manager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()?.let { prefs.addClipboardItem(it) }
+        val panel = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setBackgroundColor(theme.backgroundColor)
+        }
+        panel.addView(TextView(context).apply {
+            text = "📋  Clipboard"
+            textSize = 16f
+            setTextColor(theme.primaryTextColor)
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        })
+        prefs.clipboardItems.forEach { item ->
+            panel.addView(TextView(context).apply {
+                text = item
+                textSize = 15f
+                maxLines = 2
+                setTextColor(theme.primaryTextColor)
+                setPadding(dp(12), dp(10), dp(12), dp(10))
+                setOnClickListener { commit(item); showLetters() }
+            })
+        }
+        panel.addView(TextView(context).apply {
+            text = "ABC"
+            gravity = android.view.Gravity.CENTER
+            setTextColor(theme.primaryTextColor)
+            setOnClickListener { showLetters() }
+        })
+        root.removeAllViews()
+        if (prefs.toolbarEnabled) root.addView(toolbar, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, dp(38)
+        ))
+        root.addView(panel, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f
+        ))
+        emojiPanel = null
+    }
+
+    private fun openSettings() {
+        context.startActivity(Intent(context, com.shanova.keyboard.settings.SettingsActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
     }
 
     /* -------------------- key handling -------------------- */
@@ -231,4 +309,7 @@ class KeyboardController(private val context: Context) {
             ic.commitText("\n", 1)
         }
     }
+
+    private fun dp(value: Int): Int =
+        (value * context.resources.displayMetrics.density).toInt()
 }
