@@ -60,6 +60,10 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_OFFLINE, true)
         set(v) = sp.edit().putBoolean(KEY_OFFLINE, v).apply()
 
+    var profileId: String
+        get() = sp.getString(KEY_PROFILE, "default") ?: "default"
+        set(v) = sp.edit().putString(KEY_PROFILE, v).apply()
+
     var themeId: String
         get() = sp.getString(KEY_THEME, "shan_x_nova") ?: "shan_x_nova"
         set(v) = sp.edit().putString(KEY_THEME, v).apply()
@@ -115,6 +119,27 @@ class Prefs(context: Context) {
         clipboardItems = emptyList()
     }
 
+    var shortcuts: Map<String, String>
+        get() = (sp.getString(KEY_SHORTCUTS, "") ?: "").lineSequence()
+            .mapNotNull { line ->
+                val split = line.indexOf('=')
+                if (split <= 0) null else line.substring(0, split) to line.substring(split + 1)
+            }.toMap()
+        private set(value) = sp.edit().putString(
+            KEY_SHORTCUTS,
+            value.entries.joinToString("\n") { "${it.key.replace("=", "")}=${it.value.replace("\n", " ")}" }
+        ).apply()
+
+    fun saveShortcut(shortcut: String, expansion: String) {
+        val key = shortcut.trim()
+        if (key.isBlank() || expansion.isBlank()) return
+        shortcuts = shortcuts + (key to expansion)
+    }
+
+    fun deleteShortcut(shortcut: String) {
+        shortcuts = shortcuts - shortcut
+    }
+
     companion object {
         private const val FILE = "shan_x_nova_prefs"
         private const val KEY_HEIGHT = "keyboard_height_scale"
@@ -129,6 +154,8 @@ class Prefs(context: Context) {
         private const val KEY_CLIPBOARD_HISTORY = "clipboard_history_enabled"
         private const val KEY_LEARNING = "personalized_learning_enabled"
         private const val KEY_OFFLINE = "strict_offline_mode"
+        private const val KEY_PROFILE = "active_profile"
+        private const val KEY_SHORTCUTS = "shortcuts"
         private const val KEY_THEME = "theme_id"
         private const val KEY_CUSTOM_ACCENT = "custom_accent"
         private const val KEY_CUSTOM_BACKGROUND = "custom_background"

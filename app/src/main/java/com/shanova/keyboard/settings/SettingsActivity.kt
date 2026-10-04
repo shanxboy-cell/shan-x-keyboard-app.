@@ -178,6 +178,9 @@ class SettingsActivity : Activity() {
     }
 
     private fun setupDashboardActions() {
+        findViewById<Button>(R.id.btnShortcuts).setOnClickListener {
+            startActivity(Intent(this, ShortcutActivity::class.java))
+        }
         findViewById<Button>(R.id.btnPrivacyCenter).setOnClickListener {
             startActivity(Intent(this, PrivacyActivity::class.java))
         }
@@ -198,6 +201,7 @@ class SettingsActivity : Activity() {
                     "sound" in query -> R.id.switchSound
                     "height" in query || "size" in query -> R.id.seekHeight
                     "privacy" in query || "offline" in query -> R.id.btnPrivacyCenter
+                    "shortcut" in query || "dictionary" in query -> R.id.btnShortcuts
                     "custom" in query -> R.id.btnCustomTheme
                     else -> null
                 }

@@ -19,6 +19,7 @@ class KeyboardToolbar(
     private val onEdit: () -> Unit,
     private val onSymbols: () -> Unit,
     private val onThemes: () -> Unit,
+    private val onProfiles: () -> Unit,
     private val onLanguage: () -> Unit,
     private val onSettings: () -> Unit
 ) : HorizontalScrollView(context) {
@@ -51,6 +52,7 @@ class KeyboardToolbar(
             "✎" to onEdit,
             "∑" to onSymbols,
             "🎨" to onThemes,
+            "◉" to onProfiles,
             "🌐" to onLanguage,
             "🎙" to { },
             "⚙" to onSettings

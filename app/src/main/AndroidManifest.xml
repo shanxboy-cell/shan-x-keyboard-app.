@@ -46,5 +46,10 @@
             android:name=".settings.AboutActivity"
             android:exported="false"
             android:label="About SHAN-X-NOVA" />
+
+        <activity
+            android:name=".settings.ShortcutActivity"
+            android:exported="false"
+            android:label="Shortcut Manager" />
     </application>
 </manifest>

@@ -426,6 +426,15 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btnShortcuts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Shortcut Manager"
+            android:textColor="#0A0A0A"
+            android:background="@drawable/btn_accent" />
+
+        <Button
             android:id="@+id/btnPrivacyCenter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

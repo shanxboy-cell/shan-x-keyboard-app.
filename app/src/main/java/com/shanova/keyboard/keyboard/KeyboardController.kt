@@ -14,6 +14,7 @@ import com.shanova.keyboard.keyboard.languages.Language
 import com.shanova.keyboard.keyboard.languages.LanguageRegistry
 import com.shanova.keyboard.keyboard.model.Key
 import com.shanova.keyboard.keyboard.model.KeyType
+import com.shanova.keyboard.settings.KeyboardProfile
 import com.shanova.keyboard.settings.Prefs
 import com.shanova.keyboard.theme.KeyboardTheme
 
@@ -58,6 +59,7 @@ class KeyboardController(private val context: Context) {
             onEdit = { showEditingPanel() },
             onSymbols = { showSymbolPanel() },
             onThemes = { openSettings() },
+            onProfiles = { showProfiles() },
             onLanguage = { switchLanguage() },
             onSettings = { openSettings() }
         )
@@ -345,6 +347,20 @@ class KeyboardController(private val context: Context) {
         })
     }
 
+    private fun showProfiles() {
+        val names = KeyboardProfile.ALL.map { it.name }.toTypedArray()
+        val selected = KeyboardProfile.ALL.indexOfFirst { it.id == prefs.profileId }.coerceAtLeast(0)
+        android.app.AlertDialog.Builder(context)
+            .setTitle("Keyboard profiles")
+            .setSingleChoiceItems(names, selected) { dialog, which ->
+                KeyboardProfile.ALL[which].apply(prefs)
+                dialog.dismiss()
+                refresh()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     /* -------------------- key handling -------------------- */
 
     private fun handleKey(key: Key) {
@@ -394,6 +410,16 @@ class KeyboardController(private val context: Context) {
         ic.beginBatchEdit()
         ic.commitText(text, 1)
         ic.endBatchEdit()
+        if (text == " " || text == "\n") expandShortcutIfNeeded()
+    }
+
+    private fun expandShortcutIfNeeded() {
+        val ic = inputConnection ?: return
+        val before = ic.getTextBeforeCursor(80, 0)?.toString() ?: return
+        val token = before.trimEnd().substringAfterLast(' ')
+        val expansion = prefs.shortcuts[token] ?: return
+        ic.deleteSurroundingText(token.length + 1, 0)
+        ic.commitText("$expansion ", 1)
     }
 
     private fun backspace() {
